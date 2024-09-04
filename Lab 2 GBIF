@@ -85,9 +85,5 @@ ggplot(data=species_count, aes(x=year, y=count)) +
 ggplot(data=species_count, aes(x=year, y=count)) +
   geom_bar(stat="identity", color="pick a color", fill="pick a color")
 
-# Change barplot line colors by groups
-ggplot(data=species_count, aes(x=year, y=count, color=year)) +
-  geom_bar(stat="identity", fill="pick a color")
-
 #Customize your favorite plot and submit your fav on moodle
 #You can save a plot by clicking "export" then "save image as"
