@@ -1,0 +1,93 @@
+# Last week we looked at R's built in databases
+# R can also pull from external databases
+# Let's try this with GBIF (Global Biodiversity Information Facility)
+# The dismo library is the library we will use to access the GBIF database
+# We need to install dismo before we can use it
+
+install.packages("dismo")
+
+#For R to pull from an online database we need jsonlite
+
+install.packages("jsonlite")
+
+# You only need to install a package once
+# But you will need to load the library every time you start a new R session
+
+library(dismo)
+library(jsonlite)
+
+# Let's name the dataset and plug in the genus and species names 
+
+your_fav_animal = gbif("genus", "species")
+
+# There's a lot of info, let's just subset what we need
+# This line of code tells R the columns we want: "species" and "year". 
+# And that we only want observations from the "year" column to be between your birth year and 2024
+
+species_year = subset(your_fav_animal, select= c('species', 'year'), 
+                      your_fav_animal$year >= yourbirthyear & your_fav_animal$year <= 2024)
+
+
+#Now lets calculate how many observations of the species were made each year
+# We can do this by counting the # of rows that have the same year in the "year" column
+# ddply() is a function from the plyr library
+# It allows you to group together rows of data based on variable within the dataframe
+
+install.packages("plyr")
+library(plyr)
+
+species_count = ddply(species_year, ("year"), summarize, 
+                    count = length(species))
+
+# Now we can plot the data this time using ggplot
+
+install.packages("ggplot2")
+library(ggplot2)
+
+# Basic line plot 
+ggplot(data=species_count, aes(x=year, y=count)) +
+  geom_line()
+
+# Basic line plot with points
+ggplot(data=species_count, aes(x=year, y=count)) +
+  geom_line()+
+  geom_point()
+
+# Change the line type
+ggplot(data=species_count, aes(x=year, y=count)) +
+  geom_line(linetype = "dashed")+
+  geom_point()
+
+# Change the color
+ggplot(data=species_count, aes(x=year, y=count)) +
+  geom_line(linetype = "dashed", color="pick a color")+
+  geom_point()
+
+# Add an arrow
+install.packages("grid")
+library(grid)
+
+ggplot(data=species_count, aes(x=year, y=count)) +
+  geom_line(arrow = arrow())+
+  geom_point()
+
+# Let's make some bar plots next
+
+ggplot(data=species_count, aes(x=year, y=count)) +
+  geom_bar(stat="identity")
+
+#Flip the X and Y axis
+
+ggplot(data=species_count, aes(x=year, y=count)) +
+  geom_bar(stat="identity") + coord_flip()
+
+# Change colors
+ggplot(data=species_count, aes(x=year, y=count)) +
+  geom_bar(stat="identity", color="pick a color", fill="pick a color")
+
+# Change barplot line colors by groups
+ggplot(data=species_count, aes(x=year, y=count, color=year)) +
+  geom_bar(stat="identity", fill="pick a color")
+
+#Customize your favorite plot and submit your fav on moodle
+#You can save a plot by clicking "export" then "save image as"
